@@ -26,6 +26,7 @@ public class CustomShell {
                 System.out.println("Invalid credentials. Try again.");
             }
         }
+
         ShellCommand shellCommand = new ShellCommand();
         while (true) {
             System.out.print(currentUser + "@shell$ ");
@@ -34,9 +35,7 @@ public class CustomShell {
 
             String[] tokens = input.split(" ");
             String command = tokens[0];
-            String[] arguments = new String[tokens.length - 1];
-            System.arraycopy(tokens, 1, arguments, 0, tokens.length - 1);
-
+            String[] arguments = Arrays.copyOfRange(tokens, 1, tokens.length);
             switch (command) {
                 case "exit":
                     System.out.println("Exiting shell...");
@@ -51,10 +50,12 @@ public class CustomShell {
                 case "echo":
                     System.out.println(String.join(" ", arguments));
                     break;
-//                case "clear":
-//                    System.out.print("\033[H\033[2J");
-//                    System.out.flush();
-//                    break;
+                case "clear":
+                    System.out.println("Cleared shell...");
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+//                    shellCommand.clearCmd();
+                    break;
                 case "ls":
                     shellCommand.listFiles();
                     break;
