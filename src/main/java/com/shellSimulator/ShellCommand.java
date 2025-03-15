@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -16,8 +15,6 @@ public class ShellCommand {
     private static final Map<Integer, Process> jobs = new HashMap<>();
     private static int jobIdCounter = 1;
 
-    private static String currentUser;
-    private static String currentRole;
 
     private final FilePermissionManager filePermissionManager = new FilePermissionManager();
 
@@ -94,17 +91,6 @@ public class ShellCommand {
         }
     }
 
-
-//    public void listFiles() {
-//        File dir = new File(System.getProperty("user.dir"));
-//        String[] files = dir.list();
-//        if (files != null) {
-//            for (String file : files) {
-//                System.out.println(file);
-//            }
-//        }
-//    }
-
     public void createDirectory(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: mkdir <directory>");
@@ -130,36 +116,6 @@ public class ShellCommand {
             System.out.println("Error removing directory: " + e.getMessage());
         }
     }
-//
-//    public void removeFile(String[] args) {
-//        if (args.length != 1) {
-//            System.out.println("Usage: rm <filename>");
-//            return;
-//        }
-//        Path filePath = Paths.get(args[0]);
-//        try {
-//            Files.deleteIfExists(filePath);
-//        } catch (IOException e) {
-//            System.out.println("Error removing file: " + e.getMessage());
-//        }
-//    }
-//
-//    public void touchFile(String[] args) {
-//        if (args.length != 1) {
-//            System.out.println("Usage: touch <filename>");
-//            return;
-//        }
-//        Path filePath = Paths.get(args[0]);
-//        try {
-//            if (!Files.exists(filePath)) {
-//                Files.createFile(filePath);
-//            } else {
-//                Files.setLastModifiedTime(filePath, FileTime.fromMillis(System.currentTimeMillis()));
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Error touching file: " + e.getMessage());
-//        }
-//    }
 
     public void listJobs() {
         if (jobs.isEmpty()) {
