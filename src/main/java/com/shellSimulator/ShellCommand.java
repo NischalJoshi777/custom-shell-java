@@ -6,9 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ShellCommand {
 
@@ -26,6 +24,46 @@ public class ShellCommand {
         } else {
             pr.lru(pages);
         }
+    }
+
+    public void roundRobin (Scanner scanner) {
+        Scheduler scheduler = new Scheduler();
+
+        System.out.print("Enter time slice (ms): ");
+        int timeSlice = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Enter number of processes: ");
+        int numProcesses = Integer.parseInt(scanner.nextLine());
+        List<SchedulingProcess> processes = new ArrayList<>();
+        for (int i = 1; i <= numProcesses; i++) {
+            System.out.print("Enter arrival time for Process " + i + ": ");
+            int arrivalTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter burst time for Process " + i + ": ");
+            int burstTime = Integer.parseInt(scanner.nextLine());
+            processes.add(new SchedulingProcess(i, 0, burstTime, arrivalTime)); // Priority is 0 for Round-Robin
+        }
+
+        scheduler.roundRobinScheduling(processes, timeSlice);
+    }
+
+    public void priorityscheduling(Scanner scanner) {
+        Scheduler scheduler = new Scheduler();
+
+        System.out.print("Enter number of processes: ");
+        int numProcesses = Integer.parseInt(scanner.nextLine());
+        List<SchedulingProcess> processes = new ArrayList<>();
+        for (int i = 1; i <= numProcesses; i++) {
+            System.out.print("Enter arrival time for Process " + i + ": ");
+            int arrivalTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter burst time for Process " + i + ": ");
+            int burstTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter priority for Process " + i + ": ");
+            int priority = Integer.parseInt(scanner.nextLine());
+            processes.add(new SchedulingProcess(i, priority, burstTime, arrivalTime));
+        }
+
+        scheduler.preemptivePriorityScheduling(processes);
+
     }
 
     public void changeDirectory(String[] args) {
