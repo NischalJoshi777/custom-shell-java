@@ -80,7 +80,7 @@ public class CustomShell {
 
                     scheduler.roundRobinScheduling(processes, timeSlice);
                     break;
-                case "priority":
+                case "priorityScheduling":
                     System.out.print("Enter number of processes: ");
                     numProcesses = Integer.parseInt(scanner.nextLine());
                     processes = new ArrayList<>();
