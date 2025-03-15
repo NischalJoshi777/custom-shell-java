@@ -76,6 +76,9 @@ public class CustomShell {
                 case "producer_consumer":
                     shellCommand.producerConsumer();
                     break;
+                case "dining_philosopher_semaphore":
+                    shellCommand.diningPhilosopher();
+                    break;
                 default:
                     shellCommand.executeCommand(tokens, false);
                     break;

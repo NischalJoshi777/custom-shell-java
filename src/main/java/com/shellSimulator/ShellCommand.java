@@ -1,5 +1,7 @@
 package com.shellSimulator;
 
+import com.shellSimulator.philosopher.Philosopher;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +15,27 @@ public class ShellCommand {
 
     private static final Map<Integer, Process> jobs = new HashMap<>();
     private static int jobIdCounter = 1;
+
+
+    public void diningPhilosopher() {
+        int numOfSemaphore =5;
+
+        Semaphore[] forks = new Semaphore[numOfSemaphore];
+        Thread[] philosophers = new Thread[numOfSemaphore];
+
+        for (int i = 0; i < numOfSemaphore ;i++) {
+            forks[i] = new Semaphore(1);
+        }
+
+        for (int i = 0; i < numOfSemaphore; i++) {
+            philosophers[i] = new Thread(new Philosopher(i, forks[i], forks[(i + 1) % numOfSemaphore]));
+        }
+
+        // Start all philosophers
+        for (Thread philosopher : philosophers) {
+            philosopher.start();
+        }
+    }
 
     public void pageReplacement (boolean isFifo) {
         int capacity = 3; // Number of page frames
