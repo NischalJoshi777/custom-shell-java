@@ -51,10 +51,10 @@ public class CustomShell {
                 case "echo":
                     System.out.println(String.join(" ", arguments));
                     break;
-                case "clear":
-                    System.out.print("\033[H\033[2J");
-                    System.out.flush();
-                    break;
+//                case "clear":
+//                    System.out.print("\033[H\033[2J");
+//                    System.out.flush();
+//                    break;
                 case "ls":
                     shellCommand.listFiles();
                     break;
@@ -93,6 +93,12 @@ public class CustomShell {
                     break;
                 case "page_replacement_lsu":
                     shellCommand.pageReplacement(false);
+                    break;
+                case "producer_consumer":
+                    shellCommand.producerConsumer();
+                    break;
+                case "dining_philosopher":
+                    shellCommand.diningPhilosopher();
                     break;
                 default:
                     shellCommand.executeCommand(tokens, false);

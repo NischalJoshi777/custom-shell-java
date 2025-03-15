@@ -16,6 +16,71 @@ public class ShellCommand {
     private static final Map<Integer, Process> jobs = new HashMap<>();
     private static int jobIdCounter = 1;
 
+    private static String currentUser;
+    private static String currentRole;
+
+    private final FilePermissionManager filePermissionManager = new FilePermissionManager();
+
+    public void listFiles() {
+        File currentDir = new File(System.getProperty("user.dir"));
+        File[] files = currentDir.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                System.out.println(file.getName());
+            }
+        }
+    }
+
+    public void removeFile(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: rm <filename>");
+            return;
+        }
+
+        String filePath = System.getProperty("user.dir") + "/" + args[0];
+
+        // Check permission before deleting
+        if (!filePermissionManager.hasPermission(filePath, CustomShell.getCurrentRole(), "write")) {
+            System.out.println("Permission denied: You cannot delete " + args[0]);
+            return;
+        }
+
+        File file = new File(filePath);
+        if (file.exists() && file.delete()) {
+            System.out.println(args[0] + " deleted successfully.");
+        } else {
+            System.out.println("Failed to delete " + args[0]);
+        }
+    }
+
+    public void touchFile(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: touch <filename>");
+            return;
+        }
+
+        String filePath = System.getProperty("user.dir") + "/" + args[0];
+
+        // Check permission before creating
+        if (!filePermissionManager.hasPermission(filePath, CustomShell.getCurrentRole(), "write")) {
+            System.out.println("Permission denied: You cannot create " + args[0]);
+            return;
+        }
+
+        File file = new File(filePath);
+        try {
+            if (file.createNewFile()) {
+                System.out.println(args[0] + " created successfully.");
+            } else {
+                System.out.println(args[0] + " already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating file: " + e.getMessage());
+        }
+    }
+
+
     public void changeDirectory(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: cd <directory>");
@@ -30,15 +95,15 @@ public class ShellCommand {
     }
 
 
-    public void listFiles() {
-        File dir = new File(System.getProperty("user.dir"));
-        String[] files = dir.list();
-        if (files != null) {
-            for (String file : files) {
-                System.out.println(file);
-            }
-        }
-    }
+//    public void listFiles() {
+//        File dir = new File(System.getProperty("user.dir"));
+//        String[] files = dir.list();
+//        if (files != null) {
+//            for (String file : files) {
+//                System.out.println(file);
+//            }
+//        }
+//    }
 
     public void createDirectory(String[] args) {
         if (args.length != 1) {
@@ -65,36 +130,36 @@ public class ShellCommand {
             System.out.println("Error removing directory: " + e.getMessage());
         }
     }
-
-    public void removeFile(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Usage: rm <filename>");
-            return;
-        }
-        Path filePath = Paths.get(args[0]);
-        try {
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            System.out.println("Error removing file: " + e.getMessage());
-        }
-    }
-
-    public void touchFile(String[] args) {
-        if (args.length != 1) {
-            System.out.println("Usage: touch <filename>");
-            return;
-        }
-        Path filePath = Paths.get(args[0]);
-        try {
-            if (!Files.exists(filePath)) {
-                Files.createFile(filePath);
-            } else {
-                Files.setLastModifiedTime(filePath, FileTime.fromMillis(System.currentTimeMillis()));
-            }
-        } catch (IOException e) {
-            System.out.println("Error touching file: " + e.getMessage());
-        }
-    }
+//
+//    public void removeFile(String[] args) {
+//        if (args.length != 1) {
+//            System.out.println("Usage: rm <filename>");
+//            return;
+//        }
+//        Path filePath = Paths.get(args[0]);
+//        try {
+//            Files.deleteIfExists(filePath);
+//        } catch (IOException e) {
+//            System.out.println("Error removing file: " + e.getMessage());
+//        }
+//    }
+//
+//    public void touchFile(String[] args) {
+//        if (args.length != 1) {
+//            System.out.println("Usage: touch <filename>");
+//            return;
+//        }
+//        Path filePath = Paths.get(args[0]);
+//        try {
+//            if (!Files.exists(filePath)) {
+//                Files.createFile(filePath);
+//            } else {
+//                Files.setLastModifiedTime(filePath, FileTime.fromMillis(System.currentTimeMillis()));
+//            }
+//        } catch (IOException e) {
+//            System.out.println("Error touching file: " + e.getMessage());
+//        }
+//    }
 
     public void listJobs() {
         if (jobs.isEmpty()) {
