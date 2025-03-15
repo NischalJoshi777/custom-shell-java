@@ -1,7 +1,14 @@
 package com.shellSimulator;
 
-class SchedulingProcess {
-    int id, priority, burstTime, arrivalTime, remainingTime, completionTime, startTime;
+public class SchedulingProcess {
+    ///TODO: create getter setters instead of making it public for encapsulation
+
+    public int id, priority;
+    public int burstTime;
+    public int arrivalTime;
+    public int remainingTime;
+    public int completionTime;
+    public int startTime;
 
     public SchedulingProcess(int id, int priority, int burstTime, int arrivalTime) {
         this.id = id;

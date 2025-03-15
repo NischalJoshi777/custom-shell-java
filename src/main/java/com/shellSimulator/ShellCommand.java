@@ -1,4 +1,6 @@
 package com.shellSimulator;
+import com.shellSimulator.philosopher.Philosopher;
+import com.shellSimulator.producer_consumer.ProducerConsumberMain;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,168 +9,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 public class ShellCommand {
 
-    //creating user and role
-    private static String currentUser;
-    private static String currentRole;
-
     private static final Map<Integer, Process> jobs = new HashMap<>();
     private static int jobIdCounter = 1;
-
-    private final FilePermissionManager filePermissionManager = new FilePermissionManager();
-
-    public void listFiles() {
-        File currentDir = new File(System.getProperty("user.dir"));
-        File[] files = currentDir.listFiles();
-
-        if (files != null) {
-            for (File file : files) {
-                System.out.println(file.getName());
-            }
-        }
-    }
-
-    public void removeFile(String[] args) {
-        if (args.length == 0) {
-            System.out.println("Usage: rm <filename>");
-            return;
-        }
-
-        String filePath = System.getProperty("user.dir") + "/" + args[0];
-
-        // Check permission before deleting
-        if (!filePermissionManager.hasPermission(filePath, CustomShell.getCurrentRole(), "write")) {
-            System.out.println("Permission denied: You cannot delete " + args[0]);
-            return;
-        }
-
-        File file = new File(filePath);
-        if (file.exists() && file.delete()) {
-            System.out.println(args[0] + " deleted successfully.");
-        } else {
-            System.out.println("Failed to delete " + args[0]);
-        }
-    }
-
-    public void touchFile(String[] args) {
-        if (args.length == 0) {
-            System.out.println("Usage: touch <filename>");
-            return;
-        }
-
-        String filePath = System.getProperty("user.dir") + "/" + args[0];
-
-        // Check permission before creating
-        if (!filePermissionManager.hasPermission(filePath, CustomShell.getCurrentRole(), "write")) {
-            System.out.println("Permission denied: You cannot create " + args[0]);
-            return;
-        }
-
-        File file = new File(filePath);
-        try {
-            if (file.createNewFile()) {
-                System.out.println(args[0] + " created successfully.");
-            } else {
-                System.out.println(args[0] + " already exists.");
-            }
-        } catch (IOException e) {
-            System.out.println("Error creating file: " + e.getMessage());
-        }
-    }
-
-
-//    public void listFiles() {
-//        File dir = new File(System.getProperty("user.dir"));
-//        String[] files = dir.list();
-//        if (files != null) {
-//            for (String file : files) {
-//                System.out.println(file);
-//            }
-//        }
-//    }
-
-
-
-
-//    private static void runShell(Scanner scanner) {
-//        while (true) {
-//            System.out.print(currentUser + "@shell$ ");
-//            String command = scanner.nextLine();
-//
-//            // Handle logout command
-//            if (command.equals("logout")) {
-//                System.out.println("Logging out...");
-//                currentUser = null;
-//                currentRole = null;
-//                main(new String[]{}); // Restart login process
-//                return;
-//            }
-//
-//            // Check permission for shutdown command (admin only)
-//            if (command.equals("shutdown") && !currentRole.equals("admin")) {
-//                System.out.println("Permission denied. Only admin can shutdown.");
-//                continue;
-//            }
-//
-//            // Execute other commands (custom implementation)
-//            System.out.println("Executing: " + command);
-//        }
-//    }
-
-    public void pageReplacement (boolean isFifo) {
-        int capacity = 3; // Number of page frames
-        int[] pages = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5}; // Page reference string
-
-        PageReplacement pr = new PageReplacement(capacity);
-
-        if (isFifo) {
-            pr.fifo(pages);
-        } else {
-            pr.lru(pages);
-        }
-    }
-
-    public void roundRobin (Scanner scanner) {
-        Scheduler scheduler = new Scheduler();
-
-        System.out.print("Enter time slice (ms): ");
-        int timeSlice = Integer.parseInt(scanner.nextLine());
-
-        System.out.print("Enter number of processes: ");
-        int numProcesses = Integer.parseInt(scanner.nextLine());
-        List<SchedulingProcess> processes = new ArrayList<>();
-        for (int i = 1; i <= numProcesses; i++) {
-            System.out.print("Enter arrival time for Process " + i + ": ");
-            int arrivalTime = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter burst time for Process " + i + ": ");
-            int burstTime = Integer.parseInt(scanner.nextLine());
-            processes.add(new SchedulingProcess(i, 0, burstTime, arrivalTime)); // Priority is 0 for Round-Robin
-        }
-
-        scheduler.roundRobinScheduling(processes, timeSlice);
-    }
-
-    public void priorityscheduling(Scanner scanner) {
-        Scheduler scheduler = new Scheduler();
-
-        System.out.print("Enter number of processes: ");
-        int numProcesses = Integer.parseInt(scanner.nextLine());
-        List<SchedulingProcess> processes = new ArrayList<>();
-        for (int i = 1; i <= numProcesses; i++) {
-            System.out.print("Enter arrival time for Process " + i + ": ");
-            int arrivalTime = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter burst time for Process " + i + ": ");
-            int burstTime = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter priority for Process " + i + ": ");
-            int priority = Integer.parseInt(scanner.nextLine());
-            processes.add(new SchedulingProcess(i, priority, burstTime, arrivalTime));
-        }
-
-        scheduler.preemptivePriorityScheduling(processes);
-
-    }
 
     public void changeDirectory(String[] args) {
         if (args.length != 1) {
@@ -184,7 +30,15 @@ public class ShellCommand {
     }
 
 
-
+    public void listFiles() {
+        File dir = new File(System.getProperty("user.dir"));
+        String[] files = dir.list();
+        if (files != null) {
+            for (String file : files) {
+                System.out.println(file);
+            }
+        }
+    }
 
     public void createDirectory(String[] args) {
         if (args.length != 1) {
@@ -212,35 +66,35 @@ public class ShellCommand {
         }
     }
 
-//    public void removeFile(String[] args) {
-//        if (args.length != 1) {
-//            System.out.println("Usage: rm <filename>");
-//            return;
-//        }
-//        Path filePath = Paths.get(args[0]);
-//        try {
-//            Files.deleteIfExists(filePath);
-//        } catch (IOException e) {
-//            System.out.println("Error removing file: " + e.getMessage());
-//        }
-//    }
-//
-//    public void touchFile(String[] args) {
-//        if (args.length != 1) {
-//            System.out.println("Usage: touch <filename>");
-//            return;
-//        }
-//        Path filePath = Paths.get(args[0]);
-//        try {
-//            if (!Files.exists(filePath)) {
-//                Files.createFile(filePath);
-//            } else {
-//                Files.setLastModifiedTime(filePath, FileTime.fromMillis(System.currentTimeMillis()));
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Error touching file: " + e.getMessage());
-//        }
-//    }
+    public void removeFile(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Usage: rm <filename>");
+            return;
+        }
+        Path filePath = Paths.get(args[0]);
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            System.out.println("Error removing file: " + e.getMessage());
+        }
+    }
+
+    public void touchFile(String[] args) {
+        if (args.length != 1) {
+            System.out.println("Usage: touch <filename>");
+            return;
+        }
+        Path filePath = Paths.get(args[0]);
+        try {
+            if (!Files.exists(filePath)) {
+                Files.createFile(filePath);
+            } else {
+                Files.setLastModifiedTime(filePath, FileTime.fromMillis(System.currentTimeMillis()));
+            }
+        } catch (IOException e) {
+            System.out.println("Error touching file: " + e.getMessage());
+        }
+    }
 
     public void listJobs() {
         if (jobs.isEmpty()) {
@@ -342,5 +196,82 @@ public class ShellCommand {
         } catch (IOException | InterruptedException e) {
             System.out.println("Error executing command: " + e.getMessage());
         }
+    }
+    public void diningPhilosopher() {
+        int numOfSemaphore =5;
+
+        Semaphore[] forks = new Semaphore[numOfSemaphore];
+        Thread[] philosophers = new Thread[numOfSemaphore];
+
+        for (int i = 0; i < numOfSemaphore ;i++) {
+            forks[i] = new Semaphore(1);
+        }
+
+        for (int i = 0; i < numOfSemaphore; i++) {
+            philosophers[i] = new Thread(new Philosopher(i, forks[i], forks[(i + 1) % numOfSemaphore]));
+        }
+
+        // Start all philosophers
+        for (Thread philosopher : philosophers) {
+            philosopher.start();
+        }
+    }
+
+    public void pageReplacement (boolean isFifo) {
+        int capacity = 3; // Number of page frames
+        int[] pages = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5}; // Page reference string
+
+        PageReplacement pr = new PageReplacement(capacity);
+
+        if (isFifo) {
+            pr.fifo(pages);
+        } else {
+            pr.lru(pages);
+        }
+    }
+
+    public void roundRobin (Scanner scanner) {
+        Scheduler scheduler = new Scheduler();
+
+        System.out.print("Enter time slice (ms): ");
+        int timeSlice = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Enter number of processes: ");
+        int numProcesses = Integer.parseInt(scanner.nextLine());
+        List<SchedulingProcess> processes = new ArrayList<>();
+        for (int i = 1; i <= numProcesses; i++) {
+            System.out.print("Enter arrival time for Process " + i + ": ");
+            int arrivalTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter burst time for Process " + i + ": ");
+            int burstTime = Integer.parseInt(scanner.nextLine());
+            processes.add(new SchedulingProcess(i, 0, burstTime, arrivalTime)); // Priority is 0 for Round-Robin
+        }
+
+        scheduler.roundRobinScheduling(processes, timeSlice);
+    }
+
+    public void priorityscheduling(Scanner scanner) {
+        Scheduler scheduler = new Scheduler();
+
+        System.out.print("Enter number of processes: ");
+        int numProcesses = Integer.parseInt(scanner.nextLine());
+        List<SchedulingProcess> processes = new ArrayList<>();
+        for (int i = 1; i <= numProcesses; i++) {
+            System.out.print("Enter arrival time for Process " + i + ": ");
+            int arrivalTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter burst time for Process " + i + ": ");
+            int burstTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter priority for Process " + i + ": ");
+            int priority = Integer.parseInt(scanner.nextLine());
+            processes.add(new SchedulingProcess(i, priority, burstTime, arrivalTime));
+        }
+
+        scheduler.preemptivePriorityScheduling(processes);
+
+    }
+
+    public void producerConsumer() {
+        ProducerConsumberMain.main(null);
+   
     }
 }
