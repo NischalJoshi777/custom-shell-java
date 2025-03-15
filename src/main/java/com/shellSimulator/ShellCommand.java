@@ -15,6 +15,19 @@ public class ShellCommand {
     private static final Map<Integer, Process> jobs = new HashMap<>();
     private static int jobIdCounter = 1;
 
+    public void pageReplacement (boolean isFifo) {
+        int capacity = 3; // Number of page frames
+        int[] pages = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5}; // Page reference string
+
+        PageReplacement pr = new PageReplacement(capacity);
+
+        if (isFifo) {
+            pr.fifo(pages);
+        } else {
+            pr.lru(pages);
+        }
+    }
+
     public void changeDirectory(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: cd <directory>");

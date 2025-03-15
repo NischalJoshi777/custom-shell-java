@@ -95,7 +95,13 @@ public class CustomShell {
                     }
 
                     scheduler.preemptivePriorityScheduling(processes);
-                    break;      
+                    break;
+                case "page_replacement_fifo":
+                    shellCommand.pageReplacement(true);
+                    break;
+                case "page_replacement_lsu":
+                    shellCommand.pageReplacement(false);
+                    break;
                 default:
                     shellCommand.executeCommand(tokens, false);
                     break;
