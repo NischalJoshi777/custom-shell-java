@@ -36,7 +36,9 @@ public class Philosopher implements Runnable{
 
     @Override
     public void run() {
-        while (true) {
+        int eatCount=0;
+        while (eatCount < 3) {
+            eatCount++;
             think();
             try{
                 if (id % 2 == 0) {

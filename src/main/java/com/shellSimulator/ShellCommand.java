@@ -236,6 +236,14 @@ public class ShellCommand {
         for (Thread philosopher : philosophers) {
             philosopher.start();
         }
+
+        for (Thread philosopher : philosophers) {
+            try {
+                philosopher.join(); // Wait for the philosopher to finish
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     public void pageReplacement (boolean isFifo) {
