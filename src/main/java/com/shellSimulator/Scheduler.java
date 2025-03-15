@@ -43,34 +43,52 @@ class Scheduler {
         calculateMetrics(processes);
     }
 
-    public void priorityScheduling(List<SchedulingProcess> processes) {
+    public void preemptivePriorityScheduling(List<SchedulingProcess> processes) {
         PriorityQueue<SchedulingProcess> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(p -> -p.priority));
         int currentTime = 0;
-
+    
         // Add processes to the priority queue
         priorityQueue.addAll(processes);
-
+    
         while (!priorityQueue.isEmpty()) {
             SchedulingProcess process = priorityQueue.poll();
-
+    
             // Set start time if not already set
             if (process.startTime == -1) {
                 process.startTime = currentTime;
             }
-
-            // Simulate execution for the entire burst time
-            System.out.println("Executing Process " + process.id + " with priority " + process.priority);
+    
+            // Simulate execution for 1ms (or a small time unit)
+            int executionTime = 1; // Simulate 1ms at a time
+            System.out.println("Executing Process " + process.id + " with priority " + process.priority + " for " + executionTime + "ms");
             try {
-                Thread.sleep(process.burstTime); // Simulate execution
+                Thread.sleep(executionTime); // Simulate execution
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            currentTime += process.burstTime;
-            process.completionTime = currentTime;
-            System.out.println("Process " + process.id + " completed.");
+    
+            process.remainingTime -= executionTime;
+            currentTime += executionTime;
+    
+            // Check if a higher-priority process has arrived
+            for (SchedulingProcess p : processes) {
+                if (p.arrivalTime <= currentTime && p.remainingTime > 0 && p.priority > process.priority) {
+                    System.out.println("Preempting Process " + process.id + " for Process " + p.id);
+                    priorityQueue.add(process); // Re-add the preempted process
+                    priorityQueue.add(p); // Add the higher-priority process
+                    break;
+                }
+            }
+    
+            // If the process hasn't completed, re-add it to the queue
+            if (process.remainingTime > 0) {
+                priorityQueue.add(process);
+            } else {
+                process.completionTime = currentTime;
+                System.out.println("Process " + process.id + " completed.");
+            }
         }
-
+    
         // Calculate and display performance metrics
         calculateMetrics(processes);
     }
