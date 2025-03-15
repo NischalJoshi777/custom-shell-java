@@ -1,4 +1,4 @@
-package com.shellSimulator;
+package com.shellSimulator.producer_consumer;
 import java.util.concurrent.Semaphore;
 
 class SharedBuffer {

@@ -1,10 +1,11 @@
-package com.shellSimulator;
+package com.shellSimulator.producer_consumer;
+import com.shellSimulator.SchedulingProcess;
 
-class Producer implements Runnable {
+class Consumer implements Runnable {
     private final SharedBuffer buffer;
     private final SchedulingProcess process;
 
-    public Producer(SharedBuffer buffer, SchedulingProcess process) {
+    public Consumer(SharedBuffer buffer, SchedulingProcess process) {
         this.buffer = buffer;
         this.process = process;
     }
@@ -13,12 +14,11 @@ class Producer implements Runnable {
     public void run() {
         try {
             for (int i = 1; i <= 5; i++) {
-                buffer.produce(i);
-                Thread.sleep(process.burstTime); // Simulate production time
+                buffer.consume();
+                Thread.sleep(process.burstTime); // Simulate consumption time
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 }
-

@@ -1,6 +1,6 @@
 package com.shellSimulator;
-
 import com.shellSimulator.philosopher.Philosopher;
+import com.shellSimulator.producer_consumer.ProducerConsumberMain;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,80 +15,6 @@ public class ShellCommand {
 
     private static final Map<Integer, Process> jobs = new HashMap<>();
     private static int jobIdCounter = 1;
-
-
-    public void diningPhilosopher() {
-        int numOfSemaphore =5;
-
-        Semaphore[] forks = new Semaphore[numOfSemaphore];
-        Thread[] philosophers = new Thread[numOfSemaphore];
-
-        for (int i = 0; i < numOfSemaphore ;i++) {
-            forks[i] = new Semaphore(1);
-        }
-
-        for (int i = 0; i < numOfSemaphore; i++) {
-            philosophers[i] = new Thread(new Philosopher(i, forks[i], forks[(i + 1) % numOfSemaphore]));
-        }
-
-        // Start all philosophers
-        for (Thread philosopher : philosophers) {
-            philosopher.start();
-        }
-    }
-
-    public void pageReplacement (boolean isFifo) {
-        int capacity = 3; // Number of page frames
-        int[] pages = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5}; // Page reference string
-
-        PageReplacement pr = new PageReplacement(capacity);
-
-        if (isFifo) {
-            pr.fifo(pages);
-        } else {
-            pr.lru(pages);
-        }
-    }
-
-    public void roundRobin (Scanner scanner) {
-        Scheduler scheduler = new Scheduler();
-
-        System.out.print("Enter time slice (ms): ");
-        int timeSlice = Integer.parseInt(scanner.nextLine());
-
-        System.out.print("Enter number of processes: ");
-        int numProcesses = Integer.parseInt(scanner.nextLine());
-        List<SchedulingProcess> processes = new ArrayList<>();
-        for (int i = 1; i <= numProcesses; i++) {
-            System.out.print("Enter arrival time for Process " + i + ": ");
-            int arrivalTime = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter burst time for Process " + i + ": ");
-            int burstTime = Integer.parseInt(scanner.nextLine());
-            processes.add(new SchedulingProcess(i, 0, burstTime, arrivalTime)); // Priority is 0 for Round-Robin
-        }
-
-        scheduler.roundRobinScheduling(processes, timeSlice);
-    }
-
-    public void priorityscheduling(Scanner scanner) {
-        Scheduler scheduler = new Scheduler();
-
-        System.out.print("Enter number of processes: ");
-        int numProcesses = Integer.parseInt(scanner.nextLine());
-        List<SchedulingProcess> processes = new ArrayList<>();
-        for (int i = 1; i <= numProcesses; i++) {
-            System.out.print("Enter arrival time for Process " + i + ": ");
-            int arrivalTime = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter burst time for Process " + i + ": ");
-            int burstTime = Integer.parseInt(scanner.nextLine());
-            System.out.print("Enter priority for Process " + i + ": ");
-            int priority = Integer.parseInt(scanner.nextLine());
-            processes.add(new SchedulingProcess(i, priority, burstTime, arrivalTime));
-        }
-
-        scheduler.preemptivePriorityScheduling(processes);
-
-    }
 
     public void changeDirectory(String[] args) {
         if (args.length != 1) {
@@ -271,26 +197,81 @@ public class ShellCommand {
             System.out.println("Error executing command: " + e.getMessage());
         }
     }
+    public void diningPhilosopher() {
+        int numOfSemaphore =5;
+
+        Semaphore[] forks = new Semaphore[numOfSemaphore];
+        Thread[] philosophers = new Thread[numOfSemaphore];
+
+        for (int i = 0; i < numOfSemaphore ;i++) {
+            forks[i] = new Semaphore(1);
+        }
+
+        for (int i = 0; i < numOfSemaphore; i++) {
+            philosophers[i] = new Thread(new Philosopher(i, forks[i], forks[(i + 1) % numOfSemaphore]));
+        }
+
+        // Start all philosophers
+        for (Thread philosopher : philosophers) {
+            philosopher.start();
+        }
+    }
+
+    public void pageReplacement (boolean isFifo) {
+        int capacity = 3; // Number of page frames
+        int[] pages = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5}; // Page reference string
+
+        PageReplacement pr = new PageReplacement(capacity);
+
+        if (isFifo) {
+            pr.fifo(pages);
+        } else {
+            pr.lru(pages);
+        }
+    }
+
+    public void roundRobin (Scanner scanner) {
+        Scheduler scheduler = new Scheduler();
+
+        System.out.print("Enter time slice (ms): ");
+        int timeSlice = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Enter number of processes: ");
+        int numProcesses = Integer.parseInt(scanner.nextLine());
+        List<SchedulingProcess> processes = new ArrayList<>();
+        for (int i = 1; i <= numProcesses; i++) {
+            System.out.print("Enter arrival time for Process " + i + ": ");
+            int arrivalTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter burst time for Process " + i + ": ");
+            int burstTime = Integer.parseInt(scanner.nextLine());
+            processes.add(new SchedulingProcess(i, 0, burstTime, arrivalTime)); // Priority is 0 for Round-Robin
+        }
+
+        scheduler.roundRobinScheduling(processes, timeSlice);
+    }
+
+    public void priorityscheduling(Scanner scanner) {
+        Scheduler scheduler = new Scheduler();
+
+        System.out.print("Enter number of processes: ");
+        int numProcesses = Integer.parseInt(scanner.nextLine());
+        List<SchedulingProcess> processes = new ArrayList<>();
+        for (int i = 1; i <= numProcesses; i++) {
+            System.out.print("Enter arrival time for Process " + i + ": ");
+            int arrivalTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter burst time for Process " + i + ": ");
+            int burstTime = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter priority for Process " + i + ": ");
+            int priority = Integer.parseInt(scanner.nextLine());
+            processes.add(new SchedulingProcess(i, priority, burstTime, arrivalTime));
+        }
+
+        scheduler.preemptivePriorityScheduling(processes);
+
+    }
 
     public void producerConsumer() {
-        SharedBuffer buffer = new SharedBuffer(5); // Buffer size = 5
-
-        // Create producer and consumer processes
-        SchedulingProcess producer1 = new SchedulingProcess(1, 1, 100, 0); // ID, priority, burstTime, arrivalTime
-        SchedulingProcess consumer1 = new SchedulingProcess(2, 1, 150, 0);
-
-        // Create and start producer and consumer threads
-        Thread producerThread = new Thread(new Producer(buffer, producer1));
-        Thread consumerThread = new Thread(new Consumer(buffer, consumer1));
-
-        producerThread.start();
-        consumerThread.start();
-
-        try {
-            producerThread.join();
-            consumerThread.join();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        ProducerConsumberMain.main(null);
+   
     }
 }
