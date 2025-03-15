@@ -1,5 +1,4 @@
 package com.shellSimulator;
-
 import java.util.*;
 
 public class CustomShell {
@@ -10,7 +9,6 @@ public class CustomShell {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to Secure Shell!");
-
         while (true) {
             System.out.print("Username: ");
             String username = scanner.nextLine();
@@ -54,7 +52,6 @@ public class CustomShell {
                     System.out.println("Cleared shell...");
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
-//                    shellCommand.clearCmd();
                     break;
                 case "ls":
                     shellCommand.listFiles();
