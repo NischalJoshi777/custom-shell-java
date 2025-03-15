@@ -73,6 +73,9 @@ public class CustomShell {
                 case "page_replacement_lsu":
                     shellCommand.pageReplacement(false);
                     break;
+                case "dining_philosopher_semaphore":
+                    shellCommand.diningPhilosopher();
+                    break;
                 default:
                     shellCommand.executeCommand(tokens, false);
                     break;
