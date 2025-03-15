@@ -73,6 +73,9 @@ public class CustomShell {
                 case "page_replacement_lsu":
                     shellCommand.pageReplacement(false);
                     break;
+                case "producer_consumer":
+                    shellCommand.producerConsumer();
+                    break;
                 default:
                     shellCommand.executeCommand(tokens, false);
                     break;

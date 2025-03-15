@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.*;
+import java.util.concurrent.Semaphore;
 
 public class ShellCommand {
 
@@ -245,6 +246,28 @@ public class ShellCommand {
             }
         } catch (IOException | InterruptedException e) {
             System.out.println("Error executing command: " + e.getMessage());
+        }
+    }
+
+    public void producerConsumer() {
+        SharedBuffer buffer = new SharedBuffer(5); // Buffer size = 5
+
+        // Create producer and consumer processes
+        SchedulingProcess producer1 = new SchedulingProcess(1, 1, 100, 0); // ID, priority, burstTime, arrivalTime
+        SchedulingProcess consumer1 = new SchedulingProcess(2, 1, 150, 0);
+
+        // Create and start producer and consumer threads
+        Thread producerThread = new Thread(new Producer(buffer, producer1));
+        Thread consumerThread = new Thread(new Consumer(buffer, consumer1));
+
+        producerThread.start();
+        consumerThread.start();
+
+        try {
+            producerThread.join();
+            consumerThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
