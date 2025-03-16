@@ -33,6 +33,15 @@ public class CustomShell {
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue;
 
+            if (input.contains("|")) {
+                try {
+                    pipingShell.executePipedCommands(input); // Pass the full input line
+                } catch (Exception e) {
+                    System.err.println("Error executing piped command: " + e.getMessage());
+                }
+                continue;
+            }
+
             String[] tokens = input.split(" ");
             String command = tokens[0];
             String[] arguments = new String[tokens.length - 1];
@@ -43,12 +52,6 @@ public class CustomShell {
                     System.out.println("Exiting shell...");
                     scanner.close();
                     return;
-                case "|":
-                    try {
-                        pipingShell.executePipedCommands(input);
-                    } catch (Exception e) {
-                        System.err.println("Error executing command: " + e.getMessage());
-                    }
                 case "pwd":
                     System.out.println(System.getProperty("user.dir"));
                     break;
