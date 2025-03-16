@@ -27,6 +27,7 @@ public class CustomShell {
             }
         }
         ShellCommand shellCommand = new ShellCommand();
+        PipingShell pipingShell = new PipingShell();
         while (true) {
             System.out.print(currentUser + "@shell$ ");
             String input = scanner.nextLine().trim();
@@ -42,6 +43,12 @@ public class CustomShell {
                     System.out.println("Exiting shell...");
                     scanner.close();
                     return;
+                case "|":
+                    try {
+                        pipingShell.executePipedCommands(input);
+                    } catch (Exception e) {
+                        System.err.println("Error executing command: " + e.getMessage());
+                    }
                 case "pwd":
                     System.out.println(System.getProperty("user.dir"));
                     break;

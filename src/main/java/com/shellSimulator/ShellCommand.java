@@ -2,8 +2,7 @@ package com.shellSimulator;
 import com.shellSimulator.philosopher.Philosopher;
 import com.shellSimulator.producer_consumer.ProducerConsumberMain;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,7 +75,6 @@ public class ShellCommand {
             System.out.println("Error creating file: " + e.getMessage());
         }
     }
-
 
     public void changeDirectory(String[] args) {
         if (args.length != 1) {
