@@ -80,6 +80,9 @@ public class CustomShell {
                 case "touch":
                     shellCommand.touchFile(arguments);
                     break;
+                case "cat":
+                    shellCommand.cat(arguments);
+                    break;
                 case "jobs":
                     shellCommand.listJobs();
                     break;

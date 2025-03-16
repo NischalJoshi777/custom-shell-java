@@ -76,6 +76,30 @@ public class ShellCommand {
         }
     }
 
+    public void cat(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: cat <filename>");
+            return;
+        }
+
+        String filename = args[0];
+        File file = new File(filename);
+
+        if (!file.exists() || !file.isFile()) {
+            System.out.println("Error: File not found or not a valid file.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
     public void changeDirectory(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: cd <directory>");
