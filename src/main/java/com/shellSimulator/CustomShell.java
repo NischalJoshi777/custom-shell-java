@@ -27,7 +27,6 @@ public class CustomShell {
             }
         }
         ShellCommand shellCommand = new ShellCommand();
-        PipingShell pipingShell = new PipingShell();
         while (true) {
             System.out.print(currentUser + "@shell$ ");
             String input = scanner.nextLine().trim();
@@ -35,13 +34,12 @@ public class CustomShell {
 
             if (input.contains("|")) {
                 try {
-                    pipingShell.executePipedCommands(input); // Pass the full input line
+                    PipingShell.executePipedCommands(input); // Pass the full input line
                 } catch (Exception e) {
                     System.err.println("Error executing piped command: " + e.getMessage());
                 }
                 continue;
             }
-
             String[] tokens = input.split(" ");
             String command = tokens[0];
             String[] arguments = new String[tokens.length - 1];
