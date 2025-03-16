@@ -4,20 +4,6 @@ import java.io.*;
 import java.util.*;
 
 public class PipingShell {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("myshell> ");
-            String input = scanner.nextLine().trim();
-            if (input.equalsIgnoreCase("exit")) break;
-            try {
-                executePipedCommands(input);
-            } catch (Exception e) {
-                System.err.println("Error executing command: " + e.getMessage());
-            }
-        }
-        scanner.close();
-    }
 
     public static void executePipedCommands(String commandLine) throws IOException {
         String[] commands = commandLine.split("\\|"); // Split commands by "|"
