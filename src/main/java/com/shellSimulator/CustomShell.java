@@ -1,4 +1,5 @@
 package com.shellSimulator;
+
 import java.util.*;
 
 public class CustomShell {
@@ -9,6 +10,7 @@ public class CustomShell {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to Secure Shell!");
+
         while (true) {
             System.out.print("Username: ");
             String username = scanner.nextLine();
@@ -24,16 +26,25 @@ public class CustomShell {
                 System.out.println("Invalid credentials. Try again.");
             }
         }
-
         ShellCommand shellCommand = new ShellCommand();
         while (true) {
             System.out.print(currentUser + "@shell$ ");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue;
 
+            if (input.contains("|")) {
+                try {
+                    PipingShell.executePipedCommands(input); // Pass the full input line
+                } catch (Exception e) {
+                    System.err.println("Error executing piped command: " + e.getMessage());
+                }
+                continue;
+            }
             String[] tokens = input.split(" ");
             String command = tokens[0];
-            String[] arguments = Arrays.copyOfRange(tokens, 1, tokens.length);
+            String[] arguments = new String[tokens.length - 1];
+            System.arraycopy(tokens, 1, arguments, 0, tokens.length - 1);
+
             switch (command) {
                 case "exit":
                     System.out.println("Exiting shell...");
@@ -49,7 +60,6 @@ public class CustomShell {
                     System.out.println(String.join(" ", arguments));
                     break;
                 case "clear":
-                    System.out.println("Cleared shell...");
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
                     break;
@@ -67,6 +77,9 @@ public class CustomShell {
                     break;
                 case "touch":
                     shellCommand.touchFile(arguments);
+                    break;
+                case "cat":
+                    shellCommand.cat(arguments);
                     break;
                 case "jobs":
                     shellCommand.listJobs();
@@ -95,7 +108,7 @@ public class CustomShell {
                 case "producer_consumer":
                     shellCommand.producerConsumer();
                     break;
-                case "dining_philosopher_semaphores":
+                case "dining_philosopher":
                     shellCommand.diningPhilosopher();
                     break;
                 default:
